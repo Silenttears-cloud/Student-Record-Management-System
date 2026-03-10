@@ -1,0 +1,176 @@
+================================================================================
+       DEBUGGING LOG - Student Record Management System
+       Date: 9th March 2026 | Time: ~06:55 AM IST
+================================================================================
+
+
+OBJECTIVE:
+----------
+Run the program using "python main.py" in the terminal. If it throws any 
+errors, identify the bugs, fix the code issues, and make the program run 
+successfully.
+
+
+================================================================================
+ATTEMPT #1 - Initial Run
+================================================================================
+
+COMMAND EXECUTED:
+    python main.py
+
+ERROR RECEIVED:
+    Traceback (most recent call last):
+      File "F:\Student Record Management System\main.py", line 12, in <module>
+        from services.auth import login, change_password
+      File "F:\Student Record Management System\services\__init__.py", line 1, in <module>
+        undefined
+    NameError: name 'undefined' is not defined
+
+HOW I FIGURED IT OUT:
+    - The traceback clearly pointed to "services\__init__.py", line 1.
+    - When Python tries to import anything from the "services" package, it 
+      first executes the __init__.py file inside that package.
+    - I opened "services\__init__.py" and found that it contained a single 
+      word: "undefined" (on line 1).
+    - In Python, writing "undefined" as a bare word means Python tries to 
+      look up a variable called "undefined" — which does not exist, hence 
+      the NameError.
+
+FIX APPLIED:
+    - Removed the word "undefined" from "services\__init__.py", making it 
+      an empty file (which is perfectly valid for a Python package __init__).
+
+FILE CHANGED:
+    services\__init__.py
+    BEFORE:  undefined
+    AFTER:   (empty file)
+
+
+================================================================================
+ATTEMPT #2 - Second Run After First Fix
+================================================================================
+
+COMMAND EXECUTED:
+    python main.py
+
+ERROR RECEIVED:
+    Traceback (most recent call last):
+      File "F:\Student Record Management System\main.py", line 12, in <module>
+        from services.auth import login, change_password
+      File "F:\Student Record Management System\services\auth.py", line 6, in <module>
+        from utils.file_handler import load_json, save_json
+      File "F:\Student Record Management System\utils\__init__.py", line 1, in <module>
+        undefined
+    NameError: name 'undefined' is not defined
+
+HOW I FIGURED IT OUT:
+    - Same type of error, but now in a different file: "utils\__init__.py".
+    - The first fix resolved the "services" package, but now the import chain 
+      went deeper: main.py -> services.auth -> utils.file_handler, which 
+      triggered the "utils" package __init__.py to execute.
+    - The same problem existed here — the word "undefined" on line 1.
+
+ADDITIONAL INVESTIGATION:
+    - At this point, I ran a project-wide search (using ripgrep) for the word 
+      "undefined" across ALL files in the project to catch any remaining 
+      occurrences at once instead of fixing them one by one.
+    
+    SEARCH COMMAND:  grep for "undefined" in entire project directory
+    
+    SEARCH RESULTS:
+        1. utils\__init__.py      -> Line 1: "undefined"
+        2. models\__init__.py     -> Line 1: "undefined"
+    
+    - Found TWO more files with the same issue. Both were __init__.py files 
+      in other packages (utils and models).
+
+FIX APPLIED:
+    - Removed "undefined" from BOTH files simultaneously:
+        1. utils\__init__.py
+        2. models\__init__.py
+
+FILES CHANGED:
+    utils\__init__.py
+    BEFORE:  undefined
+    AFTER:   (empty file)
+
+    models\__init__.py
+    BEFORE:  undefined
+    AFTER:   (empty file)
+
+
+================================================================================
+ATTEMPT #3 - Final Run After All Fixes
+================================================================================
+
+COMMAND EXECUTED:
+    python main.py
+
+RESULT:
+    SUCCESS! The program launched correctly with the following output:
+
+    ┌──────────────────────────────────────────────────┐
+    │                                                  │
+    │   Welcome to the Student Record Management       │
+    │   System!                                        │
+    │                                                  │
+    │  ╔══════════════════════════════════════╗         │
+    │  ║         🔐 ADMIN LOGIN               ║         │
+    │  ╚══════════════════════════════════════╝         │
+    │    Username: _                                   │
+    │                                                  │
+    └──────────────────────────────────────────────────┘
+
+    The program is now fully functional and waiting for user input 
+    (admin login credentials).
+
+
+================================================================================
+SUMMARY OF ALL BUGS FOUND & FIXED
+================================================================================
+
+TOTAL BUGS FOUND:  3 (all were the same type of bug)
+
+BUG TYPE:  NameError - Invalid Python code in __init__.py files
+
+ROOT CAUSE:
+    All three package __init__.py files (services, utils, models) contained 
+    the word "undefined" as raw text on line 1. This is not valid Python. 
+    It appears these were placeholder entries (possibly auto-generated or 
+    accidentally typed) that should have been left empty or removed before 
+    running the project.
+
+FILES FIXED:
+    1. services\__init__.py   ->  Removed "undefined" (empty file now)
+    2. utils\__init__.py      ->  Removed "undefined" (empty file now)
+    3. models\__init__.py     ->  Removed "undefined" (empty file now)
+
+TOTAL ATTEMPTS TO RUN:  3
+    - Attempt 1: FAILED  (services\__init__.py error)
+    - Attempt 2: FAILED  (utils\__init__.py error - also found models)
+    - Attempt 3: SUCCESS (program runs correctly)
+
+
+================================================================================
+DEBUGGING APPROACH & METHODOLOGY
+================================================================================
+
+1. RAN the program first to see what happens.
+2. READ the error traceback carefully to identify the exact file and line.
+3. OPENED the problematic file to inspect its contents.
+4. IDENTIFIED the issue (invalid bare word "undefined").
+5. FIXED the first occurrence and re-ran to check.
+6. When a second similar error appeared, SEARCHED THE ENTIRE PROJECT for 
+   the same pattern to catch all remaining instances at once.
+7. FIXED all remaining occurrences in one go.
+8. RAN the program one final time to confirm everything works.
+
+KEY TAKEAWAY:
+    After encountering the same bug twice, instead of fixing one file at a 
+    time and re-running repeatedly, I performed a full project-wide search 
+    to find ALL instances of the problem. This saved time and prevented 
+    additional failed runs.
+
+================================================================================
+                          END OF DEBUG LOG
+================================================================================
